@@ -1,6 +1,7 @@
 import traceback
+import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from simple_simplex import (
     create_tableau,
@@ -9,8 +10,8 @@ from simple_simplex import (
     optimize_json_format,
 )
 
-app = Flask(__name__)
-CORS(app, origins="http://localhost:3000")
+app = Flask(__name__, static_folder="../forntend/build", static_url_path="")
+CORS(app)
 
 
 @app.route("/solve", methods=["POST"])
@@ -56,6 +57,20 @@ def solve():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_react(path):
+    root_dir = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "../frontend/build")
+    )
+    file_path = os.path.join(root_dir, path)
+
+    if path != "" and os.path.exists(file_path):
+        return send_from_directory(root_dir, path)
+    else:
+        return send_from_directory(root_dir, "index.html")
 
 
 if __name__ == "__main__":
