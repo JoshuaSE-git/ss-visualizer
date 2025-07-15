@@ -10,7 +10,7 @@ from simple_simplex import (
     optimize_json_format,
 )
 
-app = Flask(__name__, static_folder="../forntend/build", static_url_path="")
+app = Flask(__name__, static_folder="../frontend/build", static_url_path="")
 CORS(app)
 
 
