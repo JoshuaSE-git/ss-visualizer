@@ -1,11 +1,12 @@
 services:
   - type: web
     name: flask-react-app
-    env: python
+    runtime: python
     buildCommand: |
       pip install -r requirements.txt
-      cd frontend
+      cd ../frontend
       npm install
       npm run build
     startCommand: gunicorn app:app
+    rootDir: backend
     plan: free
